@@ -19,7 +19,8 @@ clock = pygame.time.Clock()
 def draw_grid(positions):
     for position in positions:
         col, row = position
-
+        top_left = (col * TILE_SIZE, row * TILE_SIZE)
+        pygame.draw.rect(screen, YELLOW, (*top_left, TILE_SIZE, TILE_SIZE))
 
     for row in range(GRID_HEIGHT):
         pygame.draw.line(screen, BLACK, (0, row * TILE_SIZE), (WIDTH, row * TILE_SIZE))
@@ -31,6 +32,7 @@ def main():
     running = True
 
     positions = set()
+    positions.add((10,10))
     while running:
         clock.tick(FPS)
 
@@ -38,8 +40,19 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x,y = pygame.mouse.get_pos()
+                col = x // TILE_SIZE
+                row = y // TILE_SIZE
+                pos = (col, row)
+
+                if pos in positions:
+                    positions.remove(pos)
+                else:
+                    positions.add(pos)
+
         screen.fill(GREY)
-        draw_grid(position)
+        draw_grid(positions)
         pygame.display.update()
 
     pygame.quit()
