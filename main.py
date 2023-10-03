@@ -26,10 +26,12 @@ output.disable()  # Act as label instead of textbox
 
 
 def gen(num):
+    """Génère un set de position random"""
     return set([(random.randrange(0, GRID_HEIGHT), random.randrange(0, GRID_WIDTH)) for _ in range(num)])
 
 
 def draw_grid(positions):
+    """Dessine la grille et les cases "vivante"(jaunes)"""
     for position in positions:
         col, row = position
         top_left = (col * TILE_SIZE, row * TILE_SIZE)
@@ -43,6 +45,7 @@ def draw_grid(positions):
 
 
 def adjust_grid(positions):
+    """Partie logique Update les cases vivantes"""
     all_neighbors = set()
     new_positions = set()
 
@@ -57,7 +60,7 @@ def adjust_grid(positions):
 
     for position in all_neighbors:
         neighbors = get_neighbors(position)
-        neighbors = list(filter(lambda x: x in positions, neighbors))
+        neighbors = list(filter(lambda x: x in positions, neighbors))  # vérifie et renvoie si les voisins sont "vivant"
 
         if len(neighbors) == 3:
             new_positions.add(position)
@@ -66,6 +69,7 @@ def adjust_grid(positions):
 
 
 def get_neighbors(pos):
+    """Retourne les voisins d'une case"""
     x, y = pos
     neighbors = []
     for dx in [-1, 0, 1]:
@@ -83,10 +87,11 @@ def get_neighbors(pos):
 
 
 def main():
+    """Lance le jeu et gère les event de périphériques"""
     running = True
     playing = False
     count = 0
-    update_freq = slider.getValue()  # Tick de la sim en seconde
+    update_freq = 50  # Tick de la sim en seconde
 
     positions = set()
     while running:
