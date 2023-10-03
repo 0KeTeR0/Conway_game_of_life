@@ -98,17 +98,6 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = pygame.mouse.get_pos()
-                col = x // TILE_SIZE
-                row = y // TILE_SIZE
-                pos = (col, row)
-
-                if pos in positions:
-                    positions.remove(pos)
-                else:
-                    positions.add(pos)
-
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     playing = not playing
@@ -120,6 +109,22 @@ def main():
 
                 if event.key == pygame.K_g:
                     positions = gen(random.randrange(2, 5) * GRID_WIDTH)
+
+        mouse_presses = pygame.mouse.get_pressed()
+        if mouse_presses[0]:
+            x, y = pygame.mouse.get_pos()
+            col = x // TILE_SIZE
+            row = y // TILE_SIZE
+            pos = (col, row)
+            positions.add(pos)
+
+        elif mouse_presses[2]:
+            x, y = pygame.mouse.get_pos()
+            col = x // TILE_SIZE
+            row = y // TILE_SIZE
+            pos = (col, row)
+            if pos in positions:
+                positions.remove(pos)
 
         screen.fill(GREY)
         draw_grid(positions)
