@@ -1,5 +1,7 @@
 import random
-
+import pygame_widgets
+from pygame_widgets.slider import Slider
+from pygame_widgets.textbox import TextBox
 import pygame
 
 pygame.init()
@@ -12,10 +14,15 @@ WIDTH, HEIGHT = 800, 800
 TILE_SIZE = 20
 GRID_WIDTH = WIDTH // TILE_SIZE
 GRID_HEIGHT = HEIGHT // TILE_SIZE
-FPS = 60
+FPS = 80
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
+
+slider = Slider(screen, 40, 31, 250, 20, min=1, max=99, step=1)
+output = TextBox(screen, 318, 29, 25, 25, fontSize=20)
+
+output.disable()  # Act as label instead of textbox
 
 
 def gen(num):
@@ -79,11 +86,12 @@ def main():
     running = True
     playing = False
     count = 0
-    update_freq = 1  # Tick de la sim en seconde
+    update_freq = slider.getValue()  # Tick de la sim en seconde
 
     positions = set()
     while running:
         clock.tick(FPS)
+        update_freq = slider.getValue()
 
         if playing:
             count += 1
@@ -128,6 +136,10 @@ def main():
 
         screen.fill(GREY)
         draw_grid(positions)
+
+        output.setText(slider.getValue())
+        pygame_widgets.update(pygame.event.get())
+
         pygame.display.update()
 
     pygame.quit()
