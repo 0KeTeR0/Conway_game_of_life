@@ -123,6 +123,11 @@ def main():
                 if event.key == pygame.K_g:
                     positions = gen(random.randrange(2, 5) * GRID_WIDTH)
 
+                if event.key == pygame.K_LEFT:
+                    slider.setValue((slider.getValue() - 2))
+                if event.key == pygame.K_RIGHT:
+                    slider.setValue((slider.getValue() + 2))
+
         mouse_presses = pygame.mouse.get_pressed()
         if mouse_presses[0]:
             x, y = pygame.mouse.get_pos()
