@@ -112,6 +112,9 @@ def main():
                 running = False
 
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return pygame.quit()
+
                 if event.key == pygame.K_SPACE:
                     playing = not playing
 
