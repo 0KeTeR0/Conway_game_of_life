@@ -96,7 +96,7 @@ def main():
     positions = set()
     while running:
         clock.tick(FPS)
-        update_freq = slider.getValue()
+        update_freq = 100 - slider.getValue()
 
         if playing:
             count += 1
