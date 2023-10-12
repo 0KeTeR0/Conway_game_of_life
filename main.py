@@ -87,7 +87,7 @@ def get_neighbors(pos):
 
 
 def main():
-    """Lance le jeu et gère les event de périphériques"""
+    """Lance le jeu et gére les event de périphériques"""
     running = True
     playing = False
     count = 0
@@ -96,7 +96,7 @@ def main():
     positions = set()
     while running:
         clock.tick(FPS)
-        update_freq = 100 - slider.getValue()
+        update_freq = 100 - (slider.getValue() % 100)
 
         if playing:
             count += 1
@@ -126,9 +126,9 @@ def main():
                 if event.key == pygame.K_g:
                     positions = gen(random.randrange(2, 5) * GRID_WIDTH)
 
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT and slider.getValue() > 0:
                     slider.setValue((slider.getValue() - 2))
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_RIGHT and slider.getValue() < 99:
                     slider.setValue((slider.getValue() + 2))
 
         mouse_presses = pygame.mouse.get_pressed()
