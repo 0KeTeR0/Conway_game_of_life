@@ -10,7 +10,7 @@ BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
 YELLOW = (255, 255, 0)
 
-WIDTH, HEIGHT = 800, 800
+WIDTH, HEIGHT = 1000, 600
 TILE_SIZE = 20
 GRID_WIDTH = WIDTH // TILE_SIZE
 GRID_HEIGHT = HEIGHT // TILE_SIZE
@@ -33,7 +33,7 @@ output_Alea.disable()
 
 def gen(num):
     """Génère un set de position random"""
-    return set([(random.randrange(0, GRID_HEIGHT), random.randrange(0, GRID_WIDTH)) for _ in range(num)])
+    return set([(random.randrange(0, GRID_WIDTH), random.randrange(0, GRID_HEIGHT)) for _ in range(num)])
 
 
 def draw_grid(positions):
@@ -46,7 +46,7 @@ def draw_grid(positions):
     for row in range(GRID_HEIGHT):
         pygame.draw.line(screen, BLACK, (0, row * TILE_SIZE), (WIDTH, row * TILE_SIZE))
 
-    for col in range(GRID_HEIGHT):
+    for col in range(GRID_WIDTH):
         pygame.draw.line(screen, BLACK, (col * TILE_SIZE, 0), (col * TILE_SIZE, HEIGHT))
 
 
