@@ -22,7 +22,11 @@ clock = pygame.time.Clock()
 slider = Slider(screen, 40, 31, 250, 20, min=1, max=99, step=1)
 output = TextBox(screen, 318, 29, 25, 25, fontSize=20)
 
+slider_Alea = Slider(screen, 741, 85, 39, 490, min=1, max=500, step=1, handleRadius=15, vertical=True)
+output_Alea = TextBox(screen, 735, 10, 50, 50, fontSize=20)
+
 output.disable()  # Act as label instead of textbox
+output_Alea.disable()
 
 
 def gen(num):
@@ -100,6 +104,9 @@ def main():
 
         if playing:
             count += 1
+        if not playing:
+            nextPos = adjust_grid(positions)
+            pygame.display.update()
 
         if count >= update_freq:
             count = 0
@@ -124,7 +131,7 @@ def main():
                     count = 0
 
                 if event.key == pygame.K_g:
-                    positions = gen(random.randrange(2, 5) * GRID_WIDTH)
+                    positions = gen(slider_Alea.getValue())
 
                 if event.key == pygame.K_LEFT and slider.getValue() > 0:
                     slider.setValue((slider.getValue() - 2))
@@ -151,6 +158,7 @@ def main():
         draw_grid(positions)
 
         output.setText(slider.getValue())
+        output_Alea.setText("nb: " + str(slider_Alea.getValue()))
         pygame_widgets.update(pygame.event.get())
 
         pygame.display.update()
