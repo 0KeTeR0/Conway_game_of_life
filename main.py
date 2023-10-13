@@ -19,9 +19,11 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
 
+# Slider et sa boite de texte pour la vitesse de sim
 slider = Slider(screen, 40, 31, 250, 20, min=1, max=99, step=1)
 output = TextBox(screen, 318, 29, 25, 25, fontSize=20)
 
+# Slider et sa boite de texte le nbr de case généré aléatoirement
 slider_Alea = Slider(screen, 741, 85, 39, 490, min=1, max=500, step=1, handleRadius=15, vertical=True)
 output_Alea = TextBox(screen, 735, 10, 50, 50, fontSize=20)
 
@@ -118,10 +120,12 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
+            # quite si echap est cliqué
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return pygame.quit()
 
+                # joue et pause si espace est cliqué
                 if event.key == pygame.K_SPACE:
                     playing = not playing
 
