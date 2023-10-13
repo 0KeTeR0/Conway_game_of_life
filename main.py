@@ -10,7 +10,7 @@ BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
 YELLOW = (255, 255, 0)
 
-WIDTH, HEIGHT = 1000, 600
+WIDTH, HEIGHT = 1520, 760
 TILE_SIZE = 20
 GRID_WIDTH = WIDTH // TILE_SIZE
 GRID_HEIGHT = HEIGHT // TILE_SIZE
@@ -24,8 +24,10 @@ slider = Slider(screen, 40, 31, 250, 20, min=1, max=99, step=1)
 output = TextBox(screen, 318, 29, 25, 25, fontSize=20)
 
 # Slider et sa boite de texte le nbr de case généré aléatoirement
-slider_Alea = Slider(screen, 741, 85, 39, 490, min=1, max=500, step=1, handleRadius=15, vertical=True)
-output_Alea = TextBox(screen, 735, 10, 50, 50, fontSize=20)
+slider_Alea = Slider(screen, WIDTH - 59, 85, 39, 490, min=1, max=500, step=1, handleRadius=15, vertical=True)
+output_Alea = TextBox(screen, WIDTH - 65, 10, 50, 50, fontSize=20)
+
+output_cmpt = TextBox(screen, (WIDTH//2) - 40, 10, 80, 30, fontSize=20)
 
 output.disable()  # Act as label instead of textbox
 output_Alea.disable()
@@ -96,8 +98,9 @@ def main():
     """Lance le jeu et gére les event de périphériques"""
     running = True
     playing = False
-    count = 0
-    update_freq = 50  # Tick de la sim en seconde
+    count = 0   # égal au numéro de frame dans la seconde
+    cmpt = 0    # égal au nbr de fois que la sim a été exécuter
+    update_freq = 50  # Tick de la sim en fps
 
     positions = set()
     while running:
@@ -106,13 +109,14 @@ def main():
 
         if playing:
             count += 1
+
         if not playing:
-            nextPos = adjust_grid(positions)
             pygame.display.update()
 
         if count >= update_freq:
             count = 0
             positions = adjust_grid(positions)
+            cmpt += 1
 
         pygame.display.set_caption("Playing" if playing else "Paused")
 
@@ -133,13 +137,14 @@ def main():
                     positions = set()
                     playing = False
                     count = 0
+                    cmpt = 0
 
                 if event.key == pygame.K_g:
                     positions = gen(slider_Alea.getValue())
 
-                if event.key == pygame.K_LEFT and slider.getValue() > 0:
+                if event.key == pygame.K_LEFT and slider.getValue() > 1:
                     slider.setValue((slider.getValue() - 2))
-                if event.key == pygame.K_RIGHT and slider.getValue() < 99:
+                if event.key == pygame.K_RIGHT and slider.getValue() < 98:
                     slider.setValue((slider.getValue() + 2))
 
         mouse_presses = pygame.mouse.get_pressed()
@@ -162,7 +167,8 @@ def main():
         draw_grid(positions)
 
         output.setText(slider.getValue())
-        output_Alea.setText("nb: " + str(slider_Alea.getValue()))
+        output_Alea.setText("nb:" + str(slider_Alea.getValue()))
+        output_cmpt.setText("count : " + str(cmpt))
         pygame_widgets.update(pygame.event.get())
 
         pygame.display.update()
