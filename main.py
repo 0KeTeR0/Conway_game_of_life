@@ -27,7 +27,7 @@ output = TextBox(screen, 318, 29, 25, 25, fontSize=20)
 slider_Alea = Slider(screen, WIDTH - 59, 85, 39, 490, min=1, max=500, step=1, handleRadius=15, vertical=True)
 output_Alea = TextBox(screen, WIDTH - 65, 10, 50, 50, fontSize=20)
 
-output_cmpt = TextBox(screen, (WIDTH//2) - 40, 10, 80, 30, fontSize=20)
+output_cmpt = TextBox(screen, (WIDTH//2) - 40, 10, 85, 30, fontSize=20)
 
 output.disable()  # Act as label instead of textbox
 output_Alea.disable()
@@ -38,7 +38,7 @@ def gen(num):
     return set([(random.randrange(0, GRID_WIDTH), random.randrange(0, GRID_HEIGHT)) for _ in range(num)])
 
 
-def draw_interaction(position):
+def draw_hover(position):
     """Colorie la case survolée par le curseur"""
     col, row = position
     top_left = (col * TILE_SIZE, row * TILE_SIZE)
@@ -160,7 +160,7 @@ def main():
         row = y // TILE_SIZE
         positionCursor = (col, row)
 
-        if mouse_presses[0]:
+        if mouse_presses[0] and not ((y < 60) and (x < 330)) and not ((y < 600) and (x > 1450)):
             positions.add(positionCursor)
 
         elif mouse_presses[2]:
@@ -168,7 +168,7 @@ def main():
                 positions.remove(positionCursor)
 
         screen.fill(GREY)
-        draw_interaction(positionCursor)
+        draw_hover(positionCursor)
         draw_grid(positions)
 
         output.setText(slider.getValue())
