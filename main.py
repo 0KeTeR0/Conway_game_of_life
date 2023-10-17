@@ -38,6 +38,13 @@ def gen(num):
     return set([(random.randrange(0, GRID_WIDTH), random.randrange(0, GRID_HEIGHT)) for _ in range(num)])
 
 
+def draw_interaction(position):
+    """Colorie la case survolée par le curseur"""
+    col, row = position
+    top_left = (col * TILE_SIZE, row * TILE_SIZE)
+    pygame.draw.rect(screen, (180, 180, 80), (*top_left, TILE_SIZE, TILE_SIZE))
+
+
 def draw_grid(positions):
     """Dessine la grille et les cases "vivante"(jaunes)"""
     for position in positions:
@@ -148,22 +155,20 @@ def main():
                     slider.setValue((slider.getValue() + 2))
 
         mouse_presses = pygame.mouse.get_pressed()
+        x, y = pygame.mouse.get_pos()
+        col = x // TILE_SIZE
+        row = y // TILE_SIZE
+        positionCursor = (col, row)
+
         if mouse_presses[0]:
-            x, y = pygame.mouse.get_pos()
-            col = x // TILE_SIZE
-            row = y // TILE_SIZE
-            pos = (col, row)
-            positions.add(pos)
+            positions.add(positionCursor)
 
         elif mouse_presses[2]:
-            x, y = pygame.mouse.get_pos()
-            col = x // TILE_SIZE
-            row = y // TILE_SIZE
-            pos = (col, row)
-            if pos in positions:
-                positions.remove(pos)
+            if positionCursor in positions:
+                positions.remove(positionCursor)
 
         screen.fill(GREY)
+        draw_interaction(positionCursor)
         draw_grid(positions)
 
         output.setText(slider.getValue())
