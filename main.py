@@ -6,10 +6,13 @@ import pygame
 
 pygame.init()
 
+# Couleur de base
 BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
 YELLOW = (255, 255, 0)
+RED = (255, 0, 0)
 
+# var de base de la simulation
 WIDTH, HEIGHT = 1520, 760
 TILE_SIZE = 20
 GRID_WIDTH = WIDTH // TILE_SIZE
@@ -19,6 +22,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
 
+# todo revoir les slider qui sont peut être responsable
+# todo des inputs manqués
 # Slider et sa boite de texte pour la vitesse de sim
 slider = Slider(screen, 40, 31, 250, 20, min=1, max=99, step=1)
 output = TextBox(screen, 318, 29, 25, 25, fontSize=20)
@@ -27,6 +32,7 @@ output = TextBox(screen, 318, 29, 25, 25, fontSize=20)
 slider_Alea = Slider(screen, WIDTH - 59, 85, 39, 490, min=1, max=500, step=1, handleRadius=15, vertical=True)
 output_Alea = TextBox(screen, WIDTH - 65, 10, 50, 50, fontSize=20)
 
+# affiche le compteur de tours de sim
 output_cmpt = TextBox(screen, (WIDTH // 2) - 40, 10, 85, 30, fontSize=20)
 
 output.disable()  # Act as label instead of textbox
@@ -45,18 +51,21 @@ def draw_hover(position):
     pygame.draw.rect(screen, (180, 180, 80), (*top_left, TILE_SIZE, TILE_SIZE))
 
 
-def draw_grid(positions):
-    """Dessine la grille et les cases "vivante"(jaunes)"""
-    for position in positions:
-        col, row = position
-        top_left = (col * TILE_SIZE, row * TILE_SIZE)
-        pygame.draw.rect(screen, YELLOW, (*top_left, TILE_SIZE, TILE_SIZE))
-
+def draw_grid():
+    """Dessine la grille et les cases 'vivante' """
     for row in range(GRID_HEIGHT):
         pygame.draw.line(screen, BLACK, (0, row * TILE_SIZE), (WIDTH, row * TILE_SIZE))
 
     for col in range(GRID_WIDTH):
         pygame.draw.line(screen, BLACK, (col * TILE_SIZE, 0), (col * TILE_SIZE, HEIGHT))
+
+
+def draw_cases_vivante(positions, color):
+    """Dessine les cases 'vivantes'"""
+    for position in positions:
+        col, row = position
+        top_left = (col * TILE_SIZE, row * TILE_SIZE)
+        pygame.draw.rect(screen, color, (*top_left, TILE_SIZE, TILE_SIZE))
 
 
 def adjust_grid(positions):
@@ -112,6 +121,9 @@ def main():
     # variables de contrôle clavier
     KEY_fleche_droite = False
     KEY_fleche_gauche = False
+
+    # vars paramètres de sim
+    chosen_color = YELLOW
 
     positions = set()
     while running:
@@ -196,7 +208,8 @@ def main():
 
         screen.fill(GREY)
         draw_hover(positionCursor)
-        draw_grid(positions)
+        draw_cases_vivante(positions, chosen_color)
+        draw_grid()
 
         output.setText(round(slider.getValue()))
         output_Alea.setText("nb:" + str(slider_Alea.getValue()))
