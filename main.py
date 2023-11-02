@@ -27,7 +27,7 @@ output = TextBox(screen, 318, 29, 25, 25, fontSize=20)
 slider_Alea = Slider(screen, WIDTH - 59, 85, 39, 490, min=1, max=500, step=1, handleRadius=15, vertical=True)
 output_Alea = TextBox(screen, WIDTH - 65, 10, 50, 50, fontSize=20)
 
-output_cmpt = TextBox(screen, (WIDTH//2) - 40, 10, 85, 30, fontSize=20)
+output_cmpt = TextBox(screen, (WIDTH // 2) - 40, 10, 85, 30, fontSize=20)
 
 output.disable()  # Act as label instead of textbox
 output_Alea.disable()
@@ -105,9 +105,13 @@ def main():
     """Lance le jeu et gére les event de périphériques"""
     running = True
     playing = False
-    count = 0   # égal au numéro de frame dans la seconde
-    cmpt = 0    # égal au nbr de fois que la sim a été exécuter
+    count = 0  # égal au numéro de frame dans la seconde
+    cmpt = 0  # égal au nbr de fois que la sim a été exécuter
     update_freq = 50  # Tick de la sim en fps
+
+    # variables de contrôle clavier
+    KEY_fleche_droite = False
+    KEY_fleche_gauche = False
 
     positions = set()
     while running:
@@ -127,19 +131,22 @@ def main():
 
         pygame.display.set_caption("Playing" if playing else "Paused")
 
+        # capture des évènements
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-            # quite si echap est cliqué
+            # check si les touches sont pressé
             if event.type == pygame.KEYDOWN:
+                # quite si echap est cliqué
                 if event.key == pygame.K_ESCAPE:
                     return pygame.quit()
 
-                # joue et pause si espace est cliqué
+                # joue et pause si 'espace' est cliqué
                 if event.key == pygame.K_SPACE:
                     playing = not playing
 
+                # clear la grille si 'C' est pressé
                 if event.key == pygame.K_c:
                     positions = set()
                     playing = False
@@ -149,11 +156,31 @@ def main():
                 if event.key == pygame.K_g:
                     positions = gen(slider_Alea.getValue())
 
-                if event.key == pygame.K_LEFT and slider.getValue() > 1:
-                    slider.setValue((slider.getValue() - 2))
-                if event.key == pygame.K_RIGHT and slider.getValue() < 98:
-                    slider.setValue((slider.getValue() + 2))
+                if event.key == pygame.K_LEFT:
+                    KEY_fleche_gauche = True
+                    KEY_fleche_droite = False
 
+                if event.key == pygame.K_RIGHT:
+                    KEY_fleche_droite = True
+                    KEY_fleche_gauche = False
+
+            # check si les touches sont relever
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT:
+                    KEY_fleche_gauche = False
+
+                if event.key == pygame.K_RIGHT:
+                    KEY_fleche_droite = False
+
+        # change les vals du slider
+        if KEY_fleche_gauche and (slider.getValue() > 1):
+            slider.setValue((slider.getValue() - 0.5))
+
+        if KEY_fleche_droite and slider.getValue() < 98:
+            slider.setValue((slider.getValue() + 0.5))
+
+        # récupère la pos du curseur quand la souris est cliqué
+        # converti la pos en pixel en ligne et col de la grille
         mouse_presses = pygame.mouse.get_pressed()
         x, y = pygame.mouse.get_pos()
         col = x // TILE_SIZE
@@ -171,7 +198,7 @@ def main():
         draw_hover(positionCursor)
         draw_grid(positions)
 
-        output.setText(slider.getValue())
+        output.setText(round(slider.getValue()))
         output_Alea.setText("nb:" + str(slider_Alea.getValue()))
         output_cmpt.setText("count : " + str(cmpt))
         pygame_widgets.update(pygame.event.get())
