@@ -111,7 +111,7 @@ def get_neighbors(pos):
 
 
 def main():
-    """Lance le jeu et gére les event de périphériques"""
+    """Lance le programme"""
     running = True
     playing = False
     count = 0  # égal au numéro de frame dans la seconde
@@ -125,7 +125,8 @@ def main():
     # vars paramètres de sim
     chosen_color = YELLOW
 
-    positions = set()
+    positions = set()  # set des positions (col, row) des cases vivantes
+
     while running:
         clock.tick(FPS)
         update_freq = 100 - (slider.getValue() % 100)
@@ -141,16 +142,20 @@ def main():
             positions = adjust_grid(positions)
             cmpt += 1
 
+        # met à jour le titre de la fenetre
         pygame.display.set_caption("Playing" if playing else "Paused")
 
+        events = pygame.event.get()
         # capture des évènements
-        for event in pygame.event.get():
+        for event in events:
+
+            # stop la boucle de jeu si event = quitter
             if event.type == pygame.QUIT:
                 running = False
 
             # check si les touches sont pressé
             if event.type == pygame.KEYDOWN:
-                # quite si echap est cliqué
+                # quite si 'echap' est cliqué
                 if event.key == pygame.K_ESCAPE:
                     return pygame.quit()
 
@@ -199,6 +204,7 @@ def main():
         row = y // TILE_SIZE
         positionCursor = (col, row)
 
+        # ajoute/retire une case vivante si elle n'est pas compris dans la zone des widgets
         if mouse_presses[0] and not ((y < 60) and (x < 330)) and not ((y < 600) and (x > 1450)):
             positions.add(positionCursor)
 
@@ -206,15 +212,19 @@ def main():
             if positionCursor in positions:
                 positions.remove(positionCursor)
 
+        # affichage de la grille et des cases
         screen.fill(GREY)
         draw_hover(positionCursor)
         draw_cases_vivante(positions, chosen_color)
         draw_grid()
 
+        # lie event aux widgets pour interaction
+        pygame_widgets.update(events)
+
+        # affichage des widgets
         output.setText(round(slider.getValue()))
         output_Alea.setText("nb:" + str(slider_Alea.getValue()))
         output_cmpt.setText("count : " + str(cmpt))
-        pygame_widgets.update(pygame.event.get())
 
         pygame.display.update()
 
