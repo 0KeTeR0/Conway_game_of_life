@@ -22,8 +22,6 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
 
-# todo revoir les slider qui sont peut être responsable
-# todo des inputs manqués
 # Slider et sa boite de texte pour la vitesse de sim
 slider = Slider(screen, 40, 31, 250, 20, min=1, max=99, step=1)
 output = TextBox(screen, 318, 29, 25, 25, fontSize=20)
@@ -129,7 +127,7 @@ def main():
 
     while running:
         clock.tick(FPS)
-        update_freq = 100 - (slider.getValue() % 100)
+        update_freq = 100 - (slider.getValue() % 100)  # plus la valeur est faible plus les rafraichissements son rapide
 
         if playing:
             count += 1
@@ -142,7 +140,7 @@ def main():
             positions = adjust_grid(positions)
             cmpt += 1
 
-        # met à jour le titre de la fenetre
+        # met à jour le titre de la fenêtre
         pygame.display.set_caption("Playing" if playing else "Paused")
 
         events = pygame.event.get()
@@ -181,6 +179,12 @@ def main():
                     KEY_fleche_droite = True
                     KEY_fleche_gauche = False
 
+                # incrémente la sim d'un tour sur clique de flèche haut
+                if event.key == pygame.K_UP and not playing:
+                    count = 0
+                    positions = adjust_grid(positions)
+                    cmpt += 1
+
             # check si les touches sont relever
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
@@ -193,7 +197,7 @@ def main():
         if KEY_fleche_gauche and (slider.getValue() > 1):
             slider.setValue((slider.getValue() - 0.5))
 
-        if KEY_fleche_droite and slider.getValue() < 98:
+        if KEY_fleche_droite and slider.getValue() < 99:
             slider.setValue((slider.getValue() + 0.5))
 
         # récupère la pos du curseur quand la souris est cliqué
