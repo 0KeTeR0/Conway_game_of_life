@@ -17,14 +17,14 @@ WIDTH, HEIGHT = 1520, 760
 TILE_SIZE = 20
 GRID_WIDTH = WIDTH // TILE_SIZE
 GRID_HEIGHT = HEIGHT // TILE_SIZE
-FPS = 80
+FPS = 100
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
 
 # Slider et sa boite de texte pour la vitesse de sim
 slider = Slider(screen, 40, 31, 250, 20, min=1, max=99, step=1)
-output = TextBox(screen, 318, 29, 25, 25, fontSize=20)
+output = TextBox(screen, 318, 29, 35, 25, fontSize=20)
 
 # Slider et sa boite de texte le nbr de case généré aléatoirement
 slider_Alea = Slider(screen, WIDTH - 59, 85, 39, 490, min=1, max=500, step=1, handleRadius=15, vertical=True)
@@ -226,7 +226,7 @@ def main():
         pygame_widgets.update(events)
 
         # affichage des widgets
-        output.setText(round(slider.getValue()))
+        output.setText(str(round(slider.getValue())) + "/s")
         output_Alea.setText("nb:" + str(slider_Alea.getValue()))
         output_cmpt.setText("count : " + str(cmpt))
 
