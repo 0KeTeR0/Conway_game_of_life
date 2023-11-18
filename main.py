@@ -171,6 +171,12 @@ def main():
                 if event.key == pygame.K_g:
                     positions = gen(slider_Alea.getValue())
 
+                if event.key == pygame.K_a:
+                    if pygame.mouse.get_visible():
+                        pygame.mouse.set_visible(False)
+                    else:
+                        pygame.mouse.set_visible(True)
+
                 if event.key == pygame.K_LEFT:
                     KEY_fleche_gauche = True
                     KEY_fleche_droite = False
@@ -208,7 +214,7 @@ def main():
         row = y // TILE_SIZE
         positionCursor = (col, row)
 
-        # ajoute/retire une case vivante si elle n'est pas compris dans la zone des widgets
+        # ajoute une case vivante si elle n'est pas compris dans la zone des widgets
         if mouse_presses[0] and not ((y < 60) and (x < 330)) and not ((y < 600) and (x > 1450)):
             positions.add(positionCursor)
 
