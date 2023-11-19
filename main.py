@@ -3,6 +3,8 @@ import pygame_widgets
 from pygame_widgets.slider import Slider
 from pygame_widgets.textbox import TextBox
 import pygame
+import ctypes
+ctypes.windll.user32.SetProcessDPIAware()
 
 pygame.init()
 
@@ -12,14 +14,18 @@ GREY = (128, 128, 128)
 YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
 
+infoObject = pygame.display.Info()
+
 # var de base de la simulation
-WIDTH, HEIGHT = 1520, 760
 TILE_SIZE = 20
+FPS = 100
+WIDTH, HEIGHT = 1900, 950
 GRID_WIDTH = WIDTH // TILE_SIZE
 GRID_HEIGHT = HEIGHT // TILE_SIZE
-FPS = 100
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
+
+window = pygame.display
+screen = window.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 clock = pygame.time.Clock()
 
 # Slider et sa boite de texte pour la vitesse de sim
@@ -41,7 +47,6 @@ def gen(num):
     """Génère un set de position random"""
     return set([(random.randrange(0, GRID_WIDTH), random.randrange(0, GRID_HEIGHT)) for _ in range(num)])
 
-
 def draw_hover(position):
     """Colorie la case survolée par le curseur"""
     col, row = position
@@ -49,13 +54,13 @@ def draw_hover(position):
     pygame.draw.rect(screen, (180, 180, 80), (*top_left, TILE_SIZE, TILE_SIZE))
 
 
-def draw_grid():
+def draw_grid(widthWin, heightWin, tileSize):
     """Dessine la grille et les cases 'vivante' """
     for row in range(GRID_HEIGHT):
-        pygame.draw.line(screen, BLACK, (0, row * TILE_SIZE), (WIDTH, row * TILE_SIZE))
+        pygame.draw.line(screen, BLACK, (0, row * tileSize), (widthWin, row * tileSize))
 
     for col in range(GRID_WIDTH):
-        pygame.draw.line(screen, BLACK, (col * TILE_SIZE, 0), (col * TILE_SIZE, HEIGHT))
+        pygame.draw.line(screen, BLACK, (col * tileSize, 0), (col * tileSize, heightWin))
 
 
 def draw_cases_vivante(positions, color):
@@ -115,7 +120,6 @@ def main():
     count = 0  # égal au numéro de frame dans la seconde
     cmpt = 0  # égal au nbr de fois que la sim a été exécuter
     update_freq = 50  # Tick de la sim en fps
-
     # variables de contrôle clavier
     KEY_fleche_droite = False
     KEY_fleche_gauche = False
@@ -151,11 +155,25 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
+            if event.type == pygame.VIDEORESIZE:
+                slider_Alea.setX(window.get_window_size()[0] - 60)
+                output_Alea.setX(window.get_window_size()[0] - 65)
+                output_cmpt.setX(window.get_window_size()[0]/2 - 25)
+
+            if event.type == pygame.FULLSCREEN:
+                pass
+
             # check si les touches sont pressé
             if event.type == pygame.KEYDOWN:
                 # quite si 'echap' est cliqué
                 if event.key == pygame.K_ESCAPE:
                     return pygame.quit()
+
+                if event.key == pygame.K_F11:
+                    if window.get_window_size() == (infoObject.current_w, infoObject.current_h):
+                        window.set_mode((1520, 760), pygame.RESIZABLE)
+                    else:
+                        window.set_mode((infoObject.current_w, infoObject.current_h), pygame.FULLSCREEN)
 
                 # joue et pause si 'espace' est cliqué
                 if event.key == pygame.K_SPACE:
@@ -226,7 +244,7 @@ def main():
         screen.fill(GREY)
         draw_hover(positionCursor)
         draw_cases_vivante(positions, chosen_color)
-        draw_grid()
+        draw_grid(window.get_window_size()[0], window.get_window_size()[1], TILE_SIZE)
 
         # lie event aux widgets pour interaction
         pygame_widgets.update(events)
