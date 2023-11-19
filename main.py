@@ -215,7 +215,7 @@ def main():
         positionCursor = (col, row)
 
         # ajoute une case vivante si elle n'est pas compris dans la zone des widgets
-        if mouse_presses[0] and not ((y < 60) and (x < 330)) and not ((y < 600) and (x > 1450)):
+        if mouse_presses[0] and not (slider.selected or slider_Alea):
             positions.add(positionCursor)
 
         elif mouse_presses[2]:
@@ -235,9 +235,6 @@ def main():
         output.setText(str(round(slider.getValue())) + "/s")
         output_Alea.setText("nb:" + str(slider_Alea.getValue()))
         output_cmpt.setText("count : " + str(cmpt))
-
-        pygame.display.update()
-
     pygame.quit()
 
 
