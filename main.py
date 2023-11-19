@@ -23,12 +23,12 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
 # Slider et sa boite de texte pour la vitesse de sim
-slider = Slider(screen, 40, 31, 250, 20, min=1, max=99, step=1)
+slider = Slider(screen, 40, 21, 250, 39, min=1, max=99, step=1, handleRadius=15)
 output = TextBox(screen, 318, 29, 35, 25, fontSize=20)
 
 # Slider et sa boite de texte le nbr de case généré aléatoirement
 slider_Alea = Slider(screen, WIDTH - 59, 85, 39, 490, min=1, max=500, step=1, handleRadius=15, vertical=True)
-output_Alea = TextBox(screen, WIDTH - 65, 10, 50, 50, fontSize=20)
+output_Alea = TextBox(screen, WIDTH - 68, 30, 55, 25, fontSize=20)
 
 # affiche le compteur de tours de sim
 output_cmpt = TextBox(screen, (WIDTH // 2) - 40, 10, 85, 30, fontSize=20)
@@ -215,7 +215,7 @@ def main():
         positionCursor = (col, row)
 
         # ajoute une case vivante si elle n'est pas compris dans la zone des widgets
-        if mouse_presses[0] and not (slider.selected or slider_Alea):
+        if mouse_presses[0] and not (slider.selected or slider_Alea.selected):
             positions.add(positionCursor)
 
         elif mouse_presses[2]:
@@ -235,6 +235,9 @@ def main():
         output.setText(str(round(slider.getValue())) + "/s")
         output_Alea.setText("nb:" + str(slider_Alea.getValue()))
         output_cmpt.setText("count : " + str(cmpt))
+
+        pygame.display.update()
+
     pygame.quit()
 
 
