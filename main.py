@@ -27,7 +27,7 @@ slider = Slider(screen, 40, 21, 250, 39, min=1, max=99, step=1, handleRadius=15)
 output = TextBox(screen, 318, 29, 35, 25, fontSize=20)
 
 # Slider et sa boite de texte le nbr de case généré aléatoirement
-slider_Alea = Slider(screen, WIDTH - 59, 85, 39, 490, min=1, max=500, step=1, handleRadius=15, vertical=True)
+slider_Alea = Slider(screen, WIDTH - 59, 85, 39, 490, min=1, max=999, step=1, handleRadius=15, vertical=True)
 output_Alea = TextBox(screen, WIDTH - 68, 30, 55, 25, fontSize=20)
 
 # affiche le compteur de tours de sim
