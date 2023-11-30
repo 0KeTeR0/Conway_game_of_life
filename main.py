@@ -47,6 +47,7 @@ def gen(num):
     """Génère un set de position random"""
     return set([(random.randrange(0, GRID_WIDTH), random.randrange(0, GRID_HEIGHT)) for _ in range(num)])
 
+
 def draw_hover(position):
     """Colorie la case survolée par le curseur"""
     col, row = position
@@ -56,10 +57,10 @@ def draw_hover(position):
 
 def draw_grid(widthWin, heightWin, tileSize):
     """Dessine la grille et les cases 'vivante' """
-    for row in range(GRID_HEIGHT):
+    for row in range((heightWin // TILE_SIZE) + 1):
         pygame.draw.line(screen, BLACK, (0, row * tileSize), (widthWin, row * tileSize))
 
-    for col in range(GRID_WIDTH):
+    for col in range((widthWin // TILE_SIZE) + 1):
         pygame.draw.line(screen, BLACK, (col * tileSize, 0), (col * tileSize, heightWin))
 
 
@@ -100,10 +101,10 @@ def get_neighbors(pos):
     x, y = pos
     neighbors = []
     for dx in [-1, 0, 1]:
-        if x + dx < 0 or x + dx > GRID_WIDTH:
+        if x + dx < 0 or x + dx > window.get_window_size()[0] // TILE_SIZE:
             continue
         for dy in [-1, 0, 1]:
-            if y + dy < 0 or y + dy > GRID_HEIGHT:
+            if y + dy < 0 or y + dy > window.get_window_size()[1] // TILE_SIZE:
                 continue
             if dx == 0 and dy == 0:
                 continue
