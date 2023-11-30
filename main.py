@@ -186,11 +186,12 @@ def main():
                     count = 0
                     cmpt = 0
 
-                if event.key == pygame.K_g:
-                    positions = gen(slider_Alea.getValue())
-
-                if event.key == pygame.K_h:
-                    positions = positions | gen(slider_Alea.getValue())
+                if event.mod & pygame.KMOD_LSHIFT:
+                    if event.key == pygame.K_g:
+                        positions = positions | gen(slider_Alea.getValue())
+                else:
+                    if event.key == pygame.K_g:
+                        positions = gen(slider_Alea.getValue())
 
                 if event.key == pygame.K_a:
                     if pygame.mouse.get_visible():
