@@ -127,6 +127,7 @@ def main():
 
     # vars paramètres de sim
     chosen_color = YELLOW
+    show_grid = True
 
     positions = set()  # set des positions (col, row) des cases vivantes
 
@@ -186,6 +187,9 @@ def main():
                     playing = False
                     count = 0
                     cmpt = 0
+
+                if event.key == pygame.K_s:
+                    show_grid = not show_grid
 
                 if event.mod & pygame.KMOD_LSHIFT:
                     if event.key == pygame.K_g:
@@ -249,7 +253,8 @@ def main():
         screen.fill(GREY)
         draw_hover(positionCursor)
         draw_cases_vivante(positions, chosen_color)
-        draw_grid(window.get_window_size()[0], window.get_window_size()[1], TILE_SIZE)
+        if show_grid:
+            draw_grid(window.get_window_size()[0], window.get_window_size()[1], TILE_SIZE)
 
         # lie event aux widgets pour interaction
         pygame_widgets.update(events)
