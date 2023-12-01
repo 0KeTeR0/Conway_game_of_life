@@ -198,7 +198,7 @@ def main():
                     if event.key == pygame.K_g:
                         positions = gen(slider_Alea.getValue())
 
-                if event.key == pygame.K_a:
+                if event.key == pygame.K_m:
                     if pygame.mouse.get_visible():
                         pygame.mouse.set_visible(False)
                     else:
