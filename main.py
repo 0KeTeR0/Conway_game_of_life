@@ -45,7 +45,7 @@ output_Alea.disable()
 
 def gen(num):
     """Génère un set de position random"""
-    return set([(random.randrange(0, GRID_WIDTH), random.randrange(0, GRID_HEIGHT)) for _ in range(num)])
+    return set([(random.randrange(0, (window.get_window_size()[0] // TILE_SIZE)), random.randrange(0, (window.get_window_size()[1] // TILE_SIZE))) for _ in range(num)])
 
 
 def draw_hover(position):
@@ -53,6 +53,17 @@ def draw_hover(position):
     col, row = position
     top_left = (col * TILE_SIZE, row * TILE_SIZE)
     pygame.draw.rect(screen, (180, 180, 80), (*top_left, TILE_SIZE, TILE_SIZE))
+
+
+def draw_selected(coin1, coin2):
+    """Colorise les cases sélectionnées"""
+    ecartX = abs(coin1[0] - coin2[0])
+    ecartY = abs(coin1[1] - coin2[1])
+    for i in range(ecartX):
+        for x in range(ecartY):
+            col, row = (coin1[0] + i), (coin1[1] + x)
+            top_left = (col * TILE_SIZE, row * TILE_SIZE)
+            pygame.draw.rect(screen, (255, 255, 255), (*top_left, TILE_SIZE, TILE_SIZE))
 
 
 def draw_grid(widthWin, heightWin, tileSize):
@@ -128,6 +139,8 @@ def main():
     # vars paramètres de sim
     chosen_color = YELLOW
     show_grid = True
+    enCoursDeSelection = False
+    coin1, coin2 = None, None
 
     positions = set()  # set des positions (col, row) des cases vivantes
 
@@ -149,6 +162,14 @@ def main():
         # met à jour le titre de la fenêtre
         pygame.display.set_caption("Playing" if playing else "Paused")
 
+        # récupère la pos du curseur quand la souris est cliqué
+        # converti la pos en pixel en ligne et col de la grille
+        mouse_presses = pygame.mouse.get_pressed()
+        x, y = pygame.mouse.get_pos()
+        col = x // TILE_SIZE
+        row = y // TILE_SIZE
+        positionCursor = (col, row)
+
         events = pygame.event.get()
         # capture des évènements
         for event in events:
@@ -165,7 +186,7 @@ def main():
             if event.type == pygame.FULLSCREEN:
                 pass
 
-            # check si les touches sont pressé
+            # check si les touches sont enfoncées
             if event.type == pygame.KEYDOWN:
                 # quite si 'echap' est cliqué
                 if event.key == pygame.K_ESCAPE:
@@ -218,6 +239,18 @@ def main():
                     positions = adjust_grid(positions)
                     cmpt += 1
 
+                if event.mod & pygame.KMOD_LCTRL:
+                    print('touche crtl présser')
+                    if event.key == pygame.K_w:
+                        if not enCoursDeSelection:
+                            coin1 = positionCursor
+                        coin2 = positionCursor
+                        enCoursDeSelection = True
+                        print('coin1' + str(coin1))
+                        print('coin2' + str(coin2))
+                else:
+                    pass
+
             # check si les touches sont relever
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
@@ -226,20 +259,19 @@ def main():
                 if event.key == pygame.K_RIGHT:
                     KEY_fleche_droite = False
 
+                if event.mod & pygame.KMOD_LCTRL:
+                    if event.key == pygame.K_w:
+                        coin2 = positionCursor
+                        enCoursDeSelection = False
+                        print('coin1' + str(coin1))
+                        print('coin2' + str(coin2))
+
         # change les vals du slider
         if KEY_fleche_gauche and (slider.getValue() > 1):
             slider.setValue((slider.getValue() - 0.5))
 
         if KEY_fleche_droite and slider.getValue() < 99:
             slider.setValue((slider.getValue() + 0.5))
-
-        # récupère la pos du curseur quand la souris est cliqué
-        # converti la pos en pixel en ligne et col de la grille
-        mouse_presses = pygame.mouse.get_pressed()
-        x, y = pygame.mouse.get_pos()
-        col = x // TILE_SIZE
-        row = y // TILE_SIZE
-        positionCursor = (col, row)
 
         # ajoute une case vivante si elle n'est pas compris dans la zone des widgets
         if mouse_presses[0] and not (slider.selected or slider_Alea.selected):
@@ -253,6 +285,9 @@ def main():
         screen.fill(GREY)
         draw_hover(positionCursor)
         draw_cases_vivante(positions, chosen_color)
+        if (coin1 != None) and (coin2 != None):
+            draw_selected(coin1, coin2)
+
         if show_grid:
             draw_grid(window.get_window_size()[0], window.get_window_size()[1], TILE_SIZE)
 
